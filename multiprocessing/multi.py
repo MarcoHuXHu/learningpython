@@ -1,4 +1,4 @@
-from multiprocessing import Process
+from Multiprocessing import Process
 import os
 
 def run_proc(name):
