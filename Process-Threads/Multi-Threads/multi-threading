@@ -1,0 +1,17 @@
+import time, threading
+
+def loop(i):
+    #print('thread %s is running...' % threading.current_thread().name)
+    n = 0
+    while n < i:
+        n = n + 1
+        print('thread %s >>> %s' % (threading.current_thread().name, i))
+        time.sleep(1)
+    print('thread %s ended.' % threading.current_thread().name)
+
+
+print(threading.current_thread().name) #每一个进程都有个主线程MainThread
+for i in range(1,5):
+    t = threading.Thread(target=loop, args=(i,), name="ChildThread")
+    t.start()
+    # t.join() #在此处join相当于阻塞
