@@ -49,6 +49,34 @@ d = dict([('a', 1), ('b', 2), ('c', 3)])
 print(d) # 普通都dict是无序的
 # 注意，OrderedDict的Key会按照插入的顺序排列，不是Key本身排序：
 
+from collections import OrderedDict
+
+class LastUpdatedOrderedDict(OrderedDict):
+
+    def __init__(self, capacity):
+        # super(LastUpdatedOrderedDict, self).__init__()
+        self._capacity = capacity
+
+    def __setitem__(self, key, value):
+        containsKey = 1 if key in self else 0
+        if len(self) - containsKey >= self._capacity:
+            last = self.popitem(last=False) # 默认last=True，即pop最后一个
+            print('remove:', last)
+        if containsKey:
+            # del self[key]
+            print('set:', (key, value))
+        else:
+            print('add:', (key, value))
+        OrderedDict.__setitem__(self, key, value)
+
+FIFO = LastUpdatedOrderedDict(3)
+FIFO['1'] = 'A'; FIFO['2'] = 'B'; FIFO['3'] = 'C';
+print(FIFO)
+FIFO['3'] = 'D';
+print(FIFO)
+FIFO['4'] = 'F';
+print(FIFO)
+
 
 
 # Counter：实际上也是dict的一个子类
