@@ -24,6 +24,41 @@ class MyClass(object):
     def calc(self):
         print(10/self.number)
 
-
-with MyClass(0) as myClass:
+with MyClass(1) as myClass:
      myClass.calc()
+
+# 方法二：使用contextlib中的@contextmanager：
+# @contextmanager这个decorator接受一个generator，用yield语句把with ... as var把变量输出出去，然后，with语句就可以正常地工作了：
+
+from contextlib import contextmanager
+
+@contextmanager
+def create_dict():
+    print('contextmanager enter')
+    dic = dict()
+    dic['a'] = 1
+    yield(dic)
+    print('contextmanager exit')
+
+with create_dict() as d:
+    d['b'] = '2'
+    print(d)
+    # print(d['c'])
+
+# 代码的执行顺序是：
+# with语句首先执行yield之前的语句
+# yield调用会执行with语句内部的所有语句
+# 但是这里不能起到__exit__的作用，即出现异常，yield后的语句便不会执行了
+# 解决方法为：
+
+@contextmanager
+def closing(thing):
+    try:
+        print('closing enter')
+        yield thing
+    finally:
+        print('closing exit')
+
+with closing(dict) as d:
+    d['e'] = 5
+    print(d['f]'])
