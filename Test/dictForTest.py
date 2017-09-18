@@ -16,4 +16,3 @@ class Dict(dict):
 d=Dict()
 d['empty'] = 'value'
 d.e = 'v'
-d.a

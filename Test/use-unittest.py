@@ -3,7 +3,8 @@
 
 import unittest
 
-from DictForTest import Dict
+from dictForTest import Dict
+
 
 class TestDict(unittest.TestCase):
 
