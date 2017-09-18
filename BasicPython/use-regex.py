@@ -34,3 +34,8 @@ print(re.split(r'\s+', 'a b   c'))          # ['a', 'b', 'c']
 # 利用re，识别多个空格，逗号，分号
 print(re.split(r'[\s\,\;]+', 'a,b;; c  d')) # ['a', 'b', 'c', 'd']
 
+# matching model, greedy or not
+# default: greedy, match as much as can
+print(re.match(r'^(\d+)(0*)$', '102300').groups())  # ('102300', '')
+# change to not greedy: with '?'
+print(re.match(r'^(\d+?)(0*)$', '102300').groups()) # ('1023', '00')
