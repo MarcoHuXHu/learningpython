@@ -25,13 +25,18 @@ def triangle_iter(n):
 print('Iterable? [1, 2, 3]:', isinstance([1, 2, 3], Iterable))  # True
 print('Iterable? \'abc\':', isinstance('abc', Iterable))        # True
 print('Iterable? 123:', isinstance(123, Iterable))              # False
+print('Iterable? triangle_iter():', isinstance(triangle_iter(5), Iterable)) # True
 
 print('Iterator? [1, 2, 3]:', isinstance([1, 2, 3], Iterator))  # False
 print('Iterator? iter([1, 2, 3]):', isinstance(iter([1, 2, 3]), Iterator))  # True
 print('Iterator? \'abc\':', isinstance('abc', Iterator))        # False
 print('Iterator? 123:', isinstance(123, Iterator))              # False
+print('Iterable? triangle_iter():', isinstance(triangle_iter(5), Iterable)) # True
 
 it = triangle_iter(5)
-while True:
-    print(next(it))
 
+#while True:
+#    print(next(it))
+# 由于iterator并没有hasNext这样的方法，所以如果全部调用的话直接用for in就可以来，毕竟iterator也是iterable的
+for k in it:
+    print(k)
