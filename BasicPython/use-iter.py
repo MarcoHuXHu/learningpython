@@ -35,8 +35,10 @@ print('Iterable? triangle_iter():', isinstance(triangle_iter(5), Iterable)) # Tr
 
 it = triangle_iter(5)
 
-#while True:
+# while True:
 #    print(next(it))
-# 由于iterator并没有hasNext这样的方法，所以如果全部调用的话直接用for in就可以来，毕竟iterator也是iterable的
+# 为避免StopIteration异常，可以使用next(it, DefaultValue)
+# 由于iterator并没有hasNext这样的方法，只能等到抛出StopIteration异常
+# 所以如果全部调用的话直接用for in就可以来，毕竟iterator也是iterable的
 for k in it:
     print(k)
