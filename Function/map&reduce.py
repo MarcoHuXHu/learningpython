@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# map和reduce都是把函数作为参数传入，即高阶函数
+
 from functools import reduce
 
 # 0. 利用map和reduce来写一个str->int的函数
@@ -38,7 +40,7 @@ from itertools import permutations
 def join(a, b):
     return a + b
 
-c, n = input2.split(" ")
+c, n = input().split(" ")
 n = int(n)
 for i in sorted(permutations(c, n)):
     print(reduce(join, i))
