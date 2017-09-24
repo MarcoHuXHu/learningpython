@@ -20,8 +20,10 @@ def tcp_link(sock, address):
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # bind监听端口
 s.bind(('127.0.0.1', 9000))
-
-s.listen(1) # 最大连接数
+# 开始监听
+s.listen(5) #
+# listen(backlog)
+# 开始监听TCP传入连接，backlog指定在拒绝链接前，操作系统可以挂起的最大连接数，该值最少为1，大部分应用程序设为5就够用了
 print('Waiting Connection...')
 
 while True:
