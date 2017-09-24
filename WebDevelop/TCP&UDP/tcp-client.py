@@ -32,3 +32,24 @@ def example1():
     # 将html写入文件
     with open('index.html', 'wb') as f:
         f.write(html)
+
+# 用于与server的例子沟通
+
+from multiprocessing import Process
+import time
+
+def example2(client_name):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('127.0.0.1', 9000))
+    print(s.recv(1024))
+    s.send(client_name) # 必须send bit，不能是str
+    print(s.recv(1024))
+    time.sleep(1)
+    s.send(b'exit') # 发送exit指令让server退出while循环
+
+clients = [b'Adam', b'Ben', b'Cathy', b'David', b'Eric', b'Frank']
+
+for i in range(18):
+    p = Process(target=example2, args=(clients[i % 6],))
+    p.start()
+    time.sleep(1)
