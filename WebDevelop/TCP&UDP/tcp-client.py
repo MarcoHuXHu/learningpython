@@ -18,7 +18,7 @@ def example1():
     buffer = []
     while True:
         # 每次最多接收1024字节
-        data = s.recv(1024)
+        data = s.recv(1024) # recv会阻塞直到接收到数据
         if data:
             buffer.append(data)
         else:
