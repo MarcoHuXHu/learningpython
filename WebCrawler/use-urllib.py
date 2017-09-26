@@ -5,8 +5,7 @@ from urllib import request, parse
 
 # urlopen(url, data, timeout)
 
-# GET
-
+# 最简单的GET的例子
 # 利用urlopen(url) 直接打开url
 def url_example1():
     with request.urlopen('https://github.com/MarcoHuXHu') as f:
@@ -21,8 +20,13 @@ def url_example1():
         # print('Data: ', data.decode('utf-8'))
 
 
-# 把请求伪装成浏览器，例如，模拟iPhone 6去请求
+# 使用headers的例子
+# 通过添加headers，把请求伪装成浏览器，例如，模拟iPhone 6去请求
 def url_example2():
+    # 为了完全模拟浏览器的工作，我们需要设置一些Headers 的属性
+    # header = {'User-Agent': 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25'}
+    # req = request.Request('https://www.baidu.com', headers=header)
+    # 与下面的方法是等价的
     req = request.Request('https://www.baidu.com')
     req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
     with request.urlopen(req) as response:
@@ -32,7 +36,7 @@ def url_example2():
             print(k, ":", v)
         #print('Data: ', data.decode('utf-8'))
 
-# 对于POST
+# 使用POST的例子
 # 利用parse.urlencode来封装需要POST的数据
 # 然后再利用# 利用urlopen(Request, data)来发送请求
 # 也可以把(url, data)装入Request中，然后urlopen(Request)
@@ -61,4 +65,7 @@ def url_example3():
             print('%s: %s' % (k, v))
         print('Data:', f.read().decode('utf-8'))
 
-url_example1()
+
+
+
+url_example2()
