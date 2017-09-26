@@ -24,8 +24,10 @@ class MyClass(object):
     def calc(self):
         print(10/self.number)
 
-with MyClass(1) as myClass:
-     myClass.calc()
+
+def example1():
+    with MyClass(0) as myClass:
+         myClass.calc()
 
 # 方法二：使用contextlib中的@contextmanager：
 # @contextmanager这个decorator接受一个generator，用yield语句把with ... as var把变量输出出去，然后，with语句就可以正常地工作了：
@@ -40,10 +42,12 @@ def create_dict():
     yield(dic)
     print('contextmanager exit')
 
-with create_dict() as d:
-    d['b'] = '2'
-    print(d)
-    # print(d['c'])
+
+def example2():
+    with create_dict() as d:
+        d['b'] = '2'
+        print(d)
+        print(d['c'])
 
 # 代码的执行顺序是：
 # with语句首先执行yield之前的语句
@@ -69,10 +73,17 @@ except:
 finally:
     f.close()
 '''
-    # 这里并不能关闭f，因为f在try...catch的区块内，finally并不能引用到f
-    # 要想处理这种情况，必须在外面在加一层try...catch
-    # 因此with的好处不在于处理异常，而在于当open的时候就异常了也可以finally close
+# 这里并不能关闭f，因为f在try...catch的区块内，finally并不能引用到f
+# 要想处理这种情况，必须在外面在加一层try...catch
+# 因此with的好处不在于处理异常，而在于当open的时候就异常了也可以finally close
 
-with closing(dict) as d:
-    d['e'] = 5
-    print(d['f]'])
+
+def example3():
+    with closing(dict) as d:
+        d['e'] = 5
+        print(d['f]'])
+        print('end') # 并不会执行，因为上一句已经抛出异常了
+
+example1()
+example2()
+example3()
