@@ -58,6 +58,20 @@ def closing(thing):
         yield thing
     finally:
         print('closing exit')
+        # thing.close()
+
+# try&catch与with的区别体现在这里：
+'''
+try:
+    f = open("")
+except:
+    pass
+finally:
+    f.close()
+'''
+    # 这里并不能关闭f，因为f在try...catch的区块内，finally并不能引用到f
+    # 要想处理这种情况，必须在外面在加一层try...catch
+    # 因此with的好处不在于处理异常，而在于当open的时候就异常了也可以finally close
 
 with closing(dict) as d:
     d['e'] = 5
