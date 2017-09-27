@@ -16,7 +16,10 @@ def crawler_dongqiudi(url):
 
     soup = BeautifulSoup(open('index.html'))
 
-    print(soup.title)
+    print(soup.head.contents)
+
+    for child in soup.body.children:
+        print(child.string)
 
 
 crawler_dongqiudi('https://www.dongqiudi.com/team/50000515.html')
