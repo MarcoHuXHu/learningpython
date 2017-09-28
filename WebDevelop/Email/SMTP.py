@@ -54,12 +54,30 @@ def example2():
 def example3():
     to_address = ['husidioi@163.com', '895220176@qq.com']
     from email.mime.multipart import MIMEMultipart
+    from email.mime.base import MIMEBase
     from email.header import Header
     from email.utils import formataddr
+    from email import encoders
 
     msg = MIMEMultipart()
     msg['From'] = formataddr((Header('胡小糊', 'utf-8').encode(), from_address))
     msg['Subject'] = Header('给你的信', 'utf-8').encode()
+
+    # 加入图片作为附件
+    with open('/Users/HXH/Documents/salaryif.png', 'rb') as f:
+        # 设置附件的MIME和文件名，这里是png类型:
+        mime = MIMEBase('attached_image', 'png', filename='image1.png')
+        # 加上必要的头信息:
+        mime.add_header('Content-Disposition', 'attachment', filename='image1.png')
+        mime.add_header('Content-ID','<0>')
+        mime.add_header('X-Attachment-ID', '0')
+        # 把附件的内容读进来:
+        mime.set_payload(f.read())
+        # 用Base64编码:
+        encoders.encode_base64(mime)
+        # 添加到MIMEMultipart:
+        # msg.attach(mime)
+
 
     # 发送html格式的邮件
     msg.attach(MIMEText('<html><body><h1>Hello</h1>' +
