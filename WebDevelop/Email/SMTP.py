@@ -76,12 +76,12 @@ def example3():
         # 用Base64编码:
         encoders.encode_base64(mime)
         # 添加到MIMEMultipart:
-        # msg.attach(mime)
+        msg.attach(mime)
 
 
     # 发送html格式的邮件
     msg.attach(MIMEText('<html><body><h1>Hello</h1>' +
-                        #'<p><img src="cid:0"></p>' +
+                        '<p><img src="cid:0"></p>' +    # 把附件附在html中
                         '</body></html>', 'html', 'utf-8'))
 
     send_msg(msg, to_address)
