@@ -15,6 +15,10 @@ def send_msg(msg, to_address):
 
     server = smtplib.SMTP(smtp_server, 25) # SMTP协议默认端口是25
     server.set_debuglevel(1)
+    # 使用标准的25端口连接SMTP服务器时，使用的是明文传输，发送邮件的整个过程可能会被窃听。
+    # 要更安全地发送邮件，可以加密SMTP会话，实际上就是先创建SSL安全连接，然后再使用SMTP协议发送邮件
+    # 如gmail: smtp_server = 'smtp.gmail.com'; smtp_port = 587
+    # 对SMTP连接启用TLS mode
     server.starttls()
     server.login(from_address, password)
 
