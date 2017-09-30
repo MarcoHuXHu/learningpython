@@ -11,7 +11,7 @@ email_address = 'husidioi@163.com'
 pop3_server = ['pop3.163.com', '110']
 
 def fetch_emails():
-    email_password = 'husidi!hsd'#input('Password: ')
+    email_password = input('Password: ')
 
     # 连接到POP3服务器:
     server = poplib.POP3(*pop3_server)
@@ -81,7 +81,10 @@ def print_email(msg, indent=0):
     # 纯文本或附件：
     else:
         if msg.get_content_type() == 'text/plain' or msg.get_content_type() == 'text/html':
-            pass
+            content = msg.get_payload(decode=True)
+            print('%s%s' % ('    ' * indent, content.decode('utf-8'))) # 偷懒假定都用utf-8了
+        else:
+            print('%sAttachment: %s' % ('    ' * indent, msg.get_content_type()))
 
 
 fetch_emails()
