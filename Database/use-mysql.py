@@ -16,3 +16,14 @@ for row in data:
     #for column in row:
     #    print(column, end=" | ")
     print(row)
+
+# 执行事务
+# 事务机制可以确保数据一致性
+try:
+   # 执行SQL语句
+   cursor.execute('select * from food')
+   # 向数据库提交
+   connector.commit()
+except:
+   # 发生错误时回滚
+   connector.rollback()
