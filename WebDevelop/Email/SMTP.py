@@ -66,6 +66,11 @@ def example3():
     msg = MIMEMultipart()
     msg['From'] = formataddr((Header('胡小糊', 'utf-8').encode(), from_address))
     msg['Subject'] = Header('给你的信', 'utf-8').encode()
+    to_list = []
+    for n, address in enumerate(to_address):
+        to_list.append(formataddr((Header('胡%s糊' % ('小'*(n+1)), 'utf-8').encode(), address)))
+    # 填入多个收件人
+    msg['To'] =  ','.join(to_list)
 
     # 加入图片作为附件
     with open('/Users/HXH/Documents/salaryif.png', 'rb') as f:

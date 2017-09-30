@@ -11,7 +11,7 @@ email_address = 'husidioi@163.com'
 pop3_server = ['pop3.163.com', '110']
 
 def fetch_emails():
-    email_password = input('Password: ')
+    email_password = 'husidi!hsd'#input('Password: ')
 
     # 连接到POP3服务器:
     server = poplib.POP3(*pop3_server)
@@ -54,24 +54,34 @@ def fetch_emails():
 
 # 邮件的Subject或者Email中包含的名字都是经过编码后的str，要正常显示，就必须decode：
 def decode_str(s):
-    print(decode_header(s))
-    value, charset = decode_header(s)
-    if charset:
-        value = value.decode(charset)
-    return value
+    # decode_header(s): 会返回一个列表（考虑到多收件人或者CC的情况）
+    # [(b'\xe7\xbb\x99\xe4\xbd\xa0\xe7\x9a\x84\xe4\xbf\xa1', 'utf-8')]
+    for value, charset in decode_header(s):
+        if charset:
+            value = value.decode(charset)
+        return value
 
 
 # 将邮件嵌套的各层缩进展开：
 def print_email(msg, indent=0):
-    # 第0层，即From，To，Subject
+    # 第0层，即From，To，Subject：
     if indent == 0:
-        for header in ['From', 'To', 'Subject']:
+        print('Subject: %s' % decode_str(msg.get('Subject')))
+        for header in ['From', 'To']:
             value = msg.get(header)
-            if value:
-                print(value)
-                print(decode_str(value))
-
-
+            name, address = parseaddr(value)
+            # name = decode_str(name)
+            print('%s: %s <%s>' % (header, decode_str(name), address))
+    # 嵌套层：
+    if msg.is_multipart():
+        parts = msg.get_payload()
+        for part in parts:
+            print('%s--------------------' % ('    ' * indent))
+            print_email(part, indent+1)
+    # 纯文本或附件：
+    else:
+        if msg.get_content_type() == 'text/plain' or msg.get_content_type() == 'text/html':
+            pass
 
 
 fetch_emails()
