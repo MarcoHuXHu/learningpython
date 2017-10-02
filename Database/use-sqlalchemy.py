@@ -25,14 +25,22 @@ class Food(Base):
     fat = Column(Float)
 
 # 初始化数据库连接:
-engine = create_engine('mysql+pymysql://root:password@localhost:3306/food_nutrition')
+# 在connect string后面+'?charset=utf8'可以使得中文正常使用
+engine = create_engine('mysql+pymysql://root:password@localhost:3306/food_nutrition?charset=utf8')
 
 # 创建DBSession类型:
 DBSession = sessionmaker(bind=engine)
 
 session = DBSession()
 
-food = session.query(Food).filter(Food.food_id==1).one()
-print(food.name) # Whey
+# 更新数据
+food = session.query(Food).filter(Food.name=='蛋白').one()
+food.unit = 100
+food.unit_name = 'g'
+food.carbohydrate = 3.1
+food.protein = 11.6
+food.fat = 0.1
+
+session.commit()
 
 session.close()
