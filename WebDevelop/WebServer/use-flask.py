@@ -31,7 +31,7 @@ def login():
 def authenticate():
     # 需要从request对象读取表单内容：
     if request.form['username'] == 'World' and request.form['password'] == 'password':
-        return '<h3>Hello, World!</h3>'
+        return '<h3>Hello, %s!</h3>' % request.form['username']
     return '<h3>Wrong username or password.</h3>'
 
 app.run(host='127.0.0.1', port=9999)
