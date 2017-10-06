@@ -24,6 +24,7 @@ def consumer():
 
 def producer():
     c = consumer() # 这里只是构造一个生成器
+    # c.send(100)  # can't send non-None value to a just-started generator，构造生成器后，第一次必须要next()或者send(None)
     c.send(None)   # 从此处开始执行consumer中的代码，直到遇到yield，本例中此处返回来一个空的str
     # 其实next(c)和c.send(None)是等价的
     n = 0
