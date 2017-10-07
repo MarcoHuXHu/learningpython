@@ -7,9 +7,11 @@ import time
 
 start = time.time()
 selector = DefaultSelector()
-urls = ['www.google.com', 'www.sina.com', 'www.baidu.com', 'www.sohu.com']
+#urls = ['www.google.com', 'www.sina.com', 'www.baidu.com', 'www.sohu.com']
+urls = ['www.google.com']
 
 
+# 未来对象(Future)，异步调用执行完的时候，就把结果放在它里面。模拟asyncio中futures部分
 class Future(object):
     def __init__(self):
         self.result = None
@@ -18,10 +20,34 @@ class Future(object):
     def addDoneCallback(self, fn):
         self.callbacks.append(fn)
 
+    # 设置结果的时候执行所有回调，其中有一个回调是下一步的step()
     def setResult(self, result):
         self.result = result
         for fn in self.callbacks:
             fn(self)
+
+
+# 任务对象(Task)，用来管理生成器的状态，恢复生成器的执行。模拟asyncio中tasks部分
+# 初始化时传入被管理的、待执行的协程coroutine
+# 一个Task对应一个coroutine，管理其所有回调和结果
+class Task(object):
+    def __init__(self, coroutine):
+        self.coroutine = coroutine
+        f = Future()
+        f.setResult(None)
+        # step()方法，在初始化的时候就会执行一遍。调用send()方法发送None对协程进行初始化
+        self.step(f)
+
+    def step(self, future):
+        try:
+            # send会进入到coroutine执行, 即fetch, 直到下次yield
+            # next_future 为yield返回的对象
+            next_future = self.coroutine.send(future.result)
+            # send()完成之后，得到了下一次的future
+        except StopIteration:
+            return
+        # 然后给下一次的future添加step()回调。callbacks这个list里面无论如何都会有一个step()，使得Task一步一步执行下去
+        next_future.addDoneCallback(self.step)
 
 
 class Crawler(object):
@@ -67,22 +93,6 @@ class Crawler(object):
                 urls.remove(self.url)
                 break
 
-
-class Task(object):
-    def __init__(self, coroutine):
-        self.coroutine = coroutine
-        f = Future()
-        f.setResult(None)
-        self.step(f)
-
-    def step(self, future):
-        try:
-            # send会进入到coroutine执行, 即fetch, 直到下次yield
-            # next_future 为yield返回的对象
-            next_future = self.coroutine.send(future.result)
-        except StopIteration:
-            return
-        next_future.addDoneCallback(self.step)
 
 # Event Loop
 def loop():
