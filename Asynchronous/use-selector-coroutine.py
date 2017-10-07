@@ -7,8 +7,8 @@ import time
 
 start = time.time()
 selector = DefaultSelector()
-#urls = ['www.google.com', 'www.sina.com', 'www.baidu.com', 'www.sohu.com']
-urls = ['www.google.com']
+urls = ['www.google.com', 'www.sina.com', 'www.baidu.com', 'www.sohu.com']
+#urls = ['www.google.com']
 
 
 # 未来对象(Future)，异步调用执行完的时候，就把结果放在它里面。模拟asyncio中futures部分
@@ -24,6 +24,7 @@ class Future(object):
     def setResult(self, result):
         self.result = result
         for fn in self.callbacks:
+            print(fn) # 这里我们发现Future对象的所有callbacks，其实都是step()方法
             fn(self)
 
 
@@ -41,6 +42,10 @@ class Task(object):
     def step(self, future):
         try:
             # send会进入到coroutine执行, 即fetch, 直到下次yield
+            # 从send的进入点直到yield即为本次要异步执行的操作，直到yield退回到此处
+            # 直到下一次step()运行。下一次step会在什么情况运行呢？
+            # 即事件循环loop中接收到异步执行完毕的事件，调用callback()，callback(on_connected, on_read_response)里面
+            # future.setResult执行所有callbacks，其中有step()
             # next_future 为yield返回的对象
             next_future = self.coroutine.send(future.result)
             # send()完成之后，得到了下一次的future
@@ -102,6 +107,8 @@ def loop():
         for event_key, event_mask in events:
             callback = event_key.data
             callback()
+            # 这里的callback以及不再关心业务逻辑，反正callback已经和future对象关联起来了，
+            # 具体下一步怎么执行由future以及管理该future的task决定
 
 if __name__ == '__main__':
     import time
