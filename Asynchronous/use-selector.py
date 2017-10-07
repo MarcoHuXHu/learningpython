@@ -34,7 +34,7 @@ class Crawler(object):
         selector.register(key.fd, EVENT_READ, self.read_response)
 
     def read_response(self, key, mask):
-        chunk = self.sock.recv(409600)
+        chunk = self.sock.recv(4096)
         if chunk:
             self.response += chunk
         else:
