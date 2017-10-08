@@ -39,13 +39,22 @@ def Crawler1(url):
             writer.close()
             return response
 
-
-import aiohttp
+# 利用async和await来代替@asyncio.coroutine和yield from
 async def Crawler2(url):
-    async with aiohttp.ClientSession() as session:
-        async with session.get('http://{0}'.format(url)) as response:
-            response = await response.read()
+    reader, writer = await asyncio.open_connection(url, 80)
+    get = 'GET / HTTP/1.1\r\nHost: {0}\r\nConnection: close\r\n\r\n'.format(url)
+    writer.write(get.encode('ascii'))
+    await writer.drain()
+    lines = []
+    while True:
+        line = await reader.readline()
+        if line:
+            lines.append(line)
+        else:
+            response = b''.join(lines)
             print('Done with %s at %s Length is %s' % (url, time.time() - start, len(response)))
+            writer.close()
+            return response
 
 
 def example2():
