@@ -24,7 +24,7 @@ class Future(object):
     def setResult(self, result):
         self.result = result
         for fn in self.callbacks:
-            print(fn) # 这里我们发现Future对象的所有callbacks，其实都是step()方法
+            # print(fn) # 这里我们发现Future对象的所有callbacks，其实都是Task.step()方法
             fn(self)
 
 
@@ -55,6 +55,18 @@ class Task(object):
         next_future.addDoneCallback(self.step)
 
 
+# Event Loop
+def loop():
+    while urls:
+        # 阻塞直到有事件发生
+        events = selector.select()
+        for event_key, event_mask in events:
+            callback = event_key.data
+            callback()
+            # 这里的callback（on_connected和on_read_response）不再关心业务逻辑，反正callback已经和future对象关联起来了，
+            # 具体下一步怎么执行由future以及管理该future的task决定
+
+
 class Crawler(object):
     def __init__(self, url):
         self.url = url
@@ -75,6 +87,10 @@ class Crawler(object):
 
         selector.register(sock.fileno(), EVENT_WRITE, on_connected)
         yield f1
+        # 开始建立连接后，就通过yield返回
+        # 当连接建成后，事件循环会从此处重入，事件循环只负责调用callback（on_connected），
+        # 其中的setResult最后会调用Task.step，其中的next_future = self.coroutine.send(future.result)
+        # 会使得协程重新进入这里
 
         # 相当于connected方法
         selector.unregister(sock.fileno())
@@ -82,6 +98,7 @@ class Crawler(object):
         sock.send(get.encode('ascii'))
         print("Connected and send request to %s at %s" % (self.url, time.time() - start))
 
+        # 因为response每次只接收4096字节，故而可能需要多次接收才能完成，因此将接收的部分装在while循环中
         while True:
             f2 = Future()
 
@@ -89,26 +106,16 @@ class Crawler(object):
                 f2.setResult(sock.recv(4096))
 
             selector.register(sock.fileno(), EVENT_READ, on_read_response)
+            # 注册一个接收到数据的read事件就yield退出，直到收到该事件由此重入
             chunk = yield f2
             selector.unregister(sock.fileno())
             if chunk:
                 self.response += chunk
             else:
-                print('Done with %s at %s' % (self.url, time.time() - start))
+                print('Done with %s at %s, length=%s' % (self.url, time.time() - start, len(self.response)))
                 urls.remove(self.url)
                 break
 
-
-# Event Loop
-def loop():
-    while urls:
-        # 阻塞直到有事件发生
-        events = selector.select()
-        for event_key, event_mask in events:
-            callback = event_key.data
-            callback()
-            # 这里的callback以及不再关心业务逻辑，反正callback已经和future对象关联起来了，
-            # 具体下一步怎么执行由future以及管理该future的task决定
 
 if __name__ == '__main__':
     import time
