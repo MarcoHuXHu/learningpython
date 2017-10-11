@@ -40,6 +40,8 @@ def Crawler1(url):
             return response
 
 # 利用async和await来代替@asyncio.coroutine和yield from
+# await 相当于 yield from
+# async with ... as ...: 相当于 with (yield from ...) as ...:
 async def Crawler2(url):
     reader, writer = await asyncio.open_connection(url, 80)
     get = 'GET / HTTP/1.1\r\nHost: {0}\r\nConnection: close\r\n\r\n'.format(url)

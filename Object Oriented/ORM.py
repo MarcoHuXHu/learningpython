@@ -35,6 +35,8 @@ class ModelMetaclass(type):
             if isinstance(v, Field):
                 print('Found mapping: %s ==> %s' % (k, v))
                 mappings[k] = v
+        # 本来attrs里面除了__table__, __qualname__等属性之外，还包括构造类的时候带入的比如user，password这些Field
+        # 现在都保存到mapping里面了，所以要pop掉
         for k in mappings.keys():
             attrs.pop(k)
         attrs['__mappings__'] = mappings # 保存属性和列的映射关系
