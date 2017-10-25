@@ -1,6 +1,7 @@
 import time
 import aiohttp, asyncio
 
+# aiohttp爬虫示例
 async def fetch(url):
     async with aiohttp.ClientSession() as session:
         async with session.get('http://{0}'.format(url)) as response:
@@ -19,8 +20,8 @@ def Crawler():
     loop.close()
 
 
-import asyncio
-
+# aiohttp服务器端示例：
+# 之后的实战环节就是基于aiohttp，然而自行封装了一个webframe，并利用中间件来封装response
 from aiohttp import web
 
 async def index(request):
