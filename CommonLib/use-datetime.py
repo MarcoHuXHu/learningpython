@@ -19,7 +19,8 @@ print('dt =', dt)
 print('datetime -> timestamp:', dt.timestamp())
 
 # 把timestamp转换为datetime:
-t = dt.timestamp()
+# 注意: python中的timestamp的毫秒是在小数点后的, 所以一般的timestamp要除以1000(1e3), 以及python中的timestamp实际上是可以精确到微秒的
+t = 1475251200000 / 1e3
 print('timestamp -> datetime:', datetime.fromtimestamp(t))
 print('timestamp -> datetime as UTC+0:', datetime.utcfromtimestamp(t))
 
