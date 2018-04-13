@@ -33,6 +33,7 @@ print('a b   c'.split(' '))                 # ['a', 'b', '', '', 'c']
 print(re.split(r'\s+', 'a b   c'))          # ['a', 'b', 'c']
 # 利用re，识别多个空格，逗号，分号
 print(re.split(r'[\s\,\;]+', 'a,b;; c  d')) # ['a', 'b', 'c', 'd']
+print(re.split(r'[\,\;]+', 'a,b;; c ,; d')) # ['a', 'b', ' c ', ' d']
 
 # matching model, greedy or not
 # default: greedy, match as much as can
